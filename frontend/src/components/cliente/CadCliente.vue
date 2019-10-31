@@ -1,0 +1,260 @@
+<template>
+  <div class="cad-client">
+    <b-form>
+      <input id="client-id" type="hidden" v-model="client.id" />
+      <b-row>
+        <b-col md="6" sm="12">
+          <b-form-group label="Razão Social:" label-for="client-razao">
+            <b-form-input
+              id="client-razao"
+              type="text"
+              v-model="client.razaoSocial"
+              required
+              :readonly="mode === 'remove'"
+              placeholder="Informe a Razão Social..."
+            />
+          </b-form-group>
+        </b-col>
+        <b-col md="6" sm="12">
+          <b-form-group label="Nome Fantasia:" label-for="client-fantasia">
+            <b-form-input
+              id="client-fantasia"
+              type="text"
+              v-model="client.nomeFantasia"
+              required
+              placeholder="Informe o Nome Fantasia..."
+            />
+          </b-form-group>
+        </b-col>
+      </b-row>
+      <b-row v-show="mode === 'save'">
+        <b-col md="3" sm="12">
+          <b-form-group label="CNPJ:" label-for="client-cnpj">
+            <b-form-input
+              id="client-cnpj"
+              type="text"
+              v-model="client.cnpj"
+              required
+              v-mask="cnpj"
+              placeholder="Informe o CNPJ..."
+            />
+          </b-form-group>
+        </b-col>
+         <b-form-invalid-feedback id="input-cnpj-feedback">
+         Digite os 11 numeros
+        </b-form-invalid-feedback>
+        <b-col md="3" sm="12">
+          <b-form-group label="IE:" label-for="client-ie">
+            <b-form-input
+              id="client-ie"
+              type="text"
+              v-model="client.ie"
+              required
+              v-mask="ie"
+              placeholder="Informe a Esc. Estadual..."
+            />
+          </b-form-group>
+        </b-col>
+        <b-col md="3" sm="12">
+          <b-form-group label="Telefone:" label-for="client-telefone">
+            <b-form-input
+              id="client-telefone"
+              type="text"
+              v-model="client.telefone"
+              required
+              :readonly="mode === 'remove'"
+              v-mask="phone"
+              placeholder= "(99) 9999-9999"
+            />
+          </b-form-group>
+        </b-col>
+        <b-col md="3" sm="12">
+          <b-form-group label="Celular:" label-for="client-celular">
+            <b-form-input
+              id="client-celular"
+              type="text"
+              v-model="client.celular"
+              required
+              v-mask="cel"
+              placeholder= "(99) 99999-9999"
+            />
+          </b-form-group>
+        </b-col>
+        <b-col md="6" sm="12">
+          <b-form-group label="Endereço:" label-for="client-endereco">
+            <b-form-input
+              id="client-endereco"
+              type="text"
+              v-model="client.endereco"
+              required
+              placeholder="Informe o Endereço..."
+            />
+          </b-form-group>
+        </b-col>
+        <b-col md="6" sm="12">
+          <b-form-group label="Email:" label-for="client-email">
+            <b-form-input
+              id="client-email"
+              type="email"
+              v-model="client.email"
+              required
+              placeholder="Informe o email..."
+            />
+          </b-form-group>
+        </b-col>
+        <b-col md="3" sm="12">
+          <b-form-group label="Bairro:" label-for="client-bairro">
+            <b-form-input
+              id="client-bairro"
+              type="text"
+              v-model="client.bairro"
+              required
+              placeholder="Informe o Bairro..."
+            />
+          </b-form-group>
+        </b-col>
+        <b-col md="3" sm="12">
+          <b-form-group label="CEP:" label-for="client-cep">
+            <b-form-input id="client-cep" type="text" v-model="client.cep" v-mask="cep" required placeholder= "99999-9999" />
+          </b-form-group>
+        </b-col>
+        <b-col md="3" sm="12">
+          <b-form-group label="Cidade:" label-for="client-cidade">
+          <b-form-select
+          id="client.cidade"
+          :options="cidades"
+          required
+          v-model="client.cidade" />
+          </b-form-group>
+          </b-form-group>
+        </b-col>
+        <b-col md="3" sm="12">
+          <b-form-group label="Estado:" label-for="client-estado">
+            <b-form-select
+          id="client.estado"
+          :options="estados"
+          required
+          v-model="client.estado" />
+          </b-form-group>
+          </b-form-group>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col xs="12">
+          <b-button variant="primary" v-if="mode === 'save'" @click="save">Salvar</b-button>
+
+          <b-button variant="danger" v-if="mode === 'remove'" @click="remove">Excluir</b-button>
+
+          <b-button class="ml-2" @click="reset">Cancelar</b-button>
+        </b-col>
+      </b-row>
+    </b-form>
+    <hr />
+
+    <b-table hover striped :items="clients" :fields="fields">
+      <template slot="actions" slot-scope="data">
+        <b-button variant="warning" @click="loadClient(data.item)" class="mr-2">
+           <i class="fa fa-edit"></i>
+        </b-button>
+        <b-button variant="danger" @click="loadClient(data.item, 'remove')">
+           <i class="fa fa-trash"></i>
+        </b-button>
+      </template>
+    </b-table>
+   <!-- paginação -->
+      <b-pagination size="md" v-model="page" :total-rows="count" :per-page="limit" />
+  </div>
+</template>
+
+<script>
+import { baseApiUrl, showError } from '@/global'
+import axios from 'axios'
+
+
+export default {
+  name: "CadClient",
+  data: function() {
+    return {
+      mode: "save",
+      client: {},
+      clients: [],
+      page: 1,
+      limit: 0,
+      count: 0,
+      fields: [
+        // alterando os nomes da tabelas que vem do banco,
+        // sortable é utilizado para ordenação das colunas
+        { key: "id", label: "Código", sortable: true },
+        { key: "nomeFantasia", label: "Nome", sortable: true },
+        { key: "telefone", label: "Telefone" },
+        { key: "celular", label: "Celular"},
+        { key: "actions", label: "Ações" }
+      ],
+      phone: "(##) ####-####",
+      cel: "(##) #####-####",
+      ie: "###.###.###.###",
+      cnpj: "##.###.###/####-##",
+      cep: "#####-####",
+      estados: ['São Paulo'],
+      cidades: ['Olímpia','Severinia', 'Monte Azul Paulista', 'Terra Rouxa', 'Cajobi', 'Embauba']
+    };
+  },
+  methods: {
+    // carregar os usuários do backend
+    loadClients() {
+      const url = `${baseApiUrl}/clients?page=${this.page}`;
+      axios.get(url).then(res => {
+        this.clients = res.data.data;
+        this.limit = res.data.limit;
+        this.count = res.data.cout;
+      });
+    },
+    reset() {
+      // voltando pro modo salvar
+      this.mode = "save";
+      // zerando o form
+      this.client = {};
+      // carregando a tabela
+      this.loadClients();
+    },
+    save() {
+      // verificando o id do usuário, caso tiver setado irá ser put
+      const method = this.client.id ? "put" : "post";
+      const id = this.client.id ? `/${this.client.id}` : "";
+      axios[method](`${baseApiUrl}/clients${id}`, this.client)
+        .then(() => {
+          // mostrando a mensagem de sucesso
+          this.$toasted.global.defaultSuccess();
+          // resetando o formulario e trazendo nova lista de usuário
+          this.reset();
+        })
+        .catch(showError);
+    },
+    remove() {
+      const id = this.client.id;
+      axios
+        .delete(`${baseApiUrl}/clients/${id}`)
+        .then(() => {
+          this.$toasted.global.defaultSuccess();
+          this.reset();
+        })
+        .catch(showError);
+    },
+    loadClient(client, mode = "save") {
+      this.mode = mode;
+      this.client = { ...client };
+    }
+  },
+  watch: {
+    page() {
+      this.loadClients();
+    }
+  },
+  mounted() {
+    this.loadClients();
+  }
+};
+</script>
+
+<style>
+</style>
