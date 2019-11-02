@@ -66,8 +66,13 @@
     </b-row>
     </div>
 
-    <b-table hover striped :items="problems" :fields="fields" :filter="filter"
-      :filterIncludedFields="filterOn"  @filtered="onFiltered">
+    <b-table hover striped :items="problems" show-empty :fields="fields" :filter="filter"
+      :filterIncludedFields="filterOn"  @filtered="onFiltered"> <template v-slot:empty="scope">
+      <h4>{{ scope.emptyText }}</h4>
+      </template>
+      <template v-slot:emptyfiltered="scope">
+        <h4>{{ scope.emptyFilteredText }}</h4>
+      </template>
       <template slot="actions" slot-scope="data">
         <b-button variant="warning" @click="loadProblem(data.item)" class="mr-2">
         <i class="fa fa-edit"></i>

@@ -1,8 +1,6 @@
 <template>
 	<div id="app" :class="{'hide-menu': !isMenuVisible || !user}">
-		<Header title="" 
-			:hideToggle="!user"
-			:hideUserDropdown="!user" />
+		<Header v-if="user" />
 		<Menu v-if="user" />
 		<Loading v-if="validatingToken" />
 		<Content v-else />
@@ -19,6 +17,7 @@ import Menu from "@/components/dashboard/template/Menu"
 import Content from "@/components/dashboard/template/Content"
 import Footer from "@/components/dashboard/template/Footer"
 import Loading from "@/components/dashboard/template/Loading"
+
 
 export default {
 	name: "App",

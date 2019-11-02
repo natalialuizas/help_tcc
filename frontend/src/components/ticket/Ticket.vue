@@ -1,6 +1,6 @@
 <template>
     <div class="ticket">
-        <PageTitle icon="fa fa-headset" main="Atendimentos"
+        <PageTitle icon="fa fa-phone" main=" Atendimentos"
             sub="Cadastros & Cia" />
             <b-card no-body>
                 <b-tabs card>

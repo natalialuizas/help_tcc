@@ -14,16 +14,19 @@
         <!----- Input da Data ---->
         <b-col md="3" sm="12">
           <b-form-group
-           v-if="mode === 'save'"
+            :readonly="mode === 'remove'"
            label="Data:"
+           placeholder="__/__/____"
            label-for="ticket-date"
            >
 
             <b-form-input
             id="type-date"
+            :readonly="mode === 'remove'"
             type="text"
             v-model="ticket.date"
-            :readonly="mode === 'remove'"
+            v-mask="date"
+            placeholder="__/__/____"
             >
             </b-form-input>
           </b-form-group>
@@ -47,7 +50,7 @@
 
       <!----- Input do Problema ---->
       <b-row>
-        <b-col md="4" sm="12">
+        <b-col md="6" sm="12">
           <b-form-group
            v-if="mode === 'save'"
             label="Problema:"
@@ -60,19 +63,6 @@
           </b-form-group>
         </b-col>
 
-          <!----- Input do software---->
-         <b-col md="3" sm="12">
-          <b-form-group
-          v-if="mode === 'save'"
-          label="Software:"
-          label-for="ticket-softwareId">
-
-        <b-form-select
-          id="ticket-softwareId"
-          :options="softwares"
-          v-model="ticket.softwareId" />
-          </b-form-group>
-        </b-col>
        <!----- Input do Solicitante ---->
         <b-col md="3" sm="12">
           <b-form-group
@@ -88,7 +78,7 @@
         </b-col>
 
         <!----- Input do Atendente ---->
-        <b-col md="2" sm="12">
+        <b-col md="3" sm="12">
           <b-form-group
           v-if="mode === 'save'"
           label="Atendente:"
@@ -141,10 +131,15 @@
     </div>
 
     <!----- tabelas ---->
-    <b-table hover striped :items="tickets" :fields="fields" :filter="filter"
+    <b-table hover striped :items="tickets" show-empty :fields="fields" :filter="filter"
       :filterIncludedFields="filterOn"  @filtered="onFiltered">
+      <template v-slot:empty="scope">
+        <h4>{{ scope.emptyText }}</h4>
+      </template>
+      <template v-slot:emptyfiltered="scope">
+        <h4>{{ scope.emptyFilteredText }}</h4>
+      </template>
       <template slot="actions" slot-scope="data">
-
         <!-- botões de alterar da tabela -->
         <b-button variant="warning" @click="loadTicket(data.item)" class="mr-2">
             <i class="fa fa-edit"></i>
@@ -197,6 +192,7 @@ export default {
         { key: "actions", label: "Ações" }
       ],
       status: [ 'RESOLVIDO', 'PENDENTE'],
+      date: "##/##/####"
     };
   },
    computed: {

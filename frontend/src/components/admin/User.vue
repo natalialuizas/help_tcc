@@ -62,9 +62,6 @@
         </b-form>
         <!-- final do formulário -->
 
-        <!-- risca separando o formulario da table  -->
-        <hr>
-
         <!-- filtro de pesquisa -->
      <div class="filtro">
     <b-row align-h="end">
@@ -86,8 +83,14 @@
     </div>
 
     <!-- tabela  -->
-      <b-table hover striped responsive :items="users" :fields="fields" :filter="filter"
+      <b-table hover striped responsive :items="users" show-empty :fields="fields" :filter="filter"
       :filterIncludedFields="filterOn"  @filtered="onFiltered">
+      <template v-slot:empty="scope">
+        <h4>{{ scope.emptyText }}</h4>
+      </template>
+      <template v-slot:emptyfiltered="scope">
+        <h4>{{ scope.emptyFilteredText }}</h4>
+      </template>
           <!-- botões de alterar e excluir -->
             <template slot="actions" slot-scope="data">
                 <!-- botão de alterar -->

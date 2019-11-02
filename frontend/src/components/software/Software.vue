@@ -1,6 +1,6 @@
 <template>
-    <div class="ticket">
-        <PageTitle icon="fa fa-headset" main="Softwares"
+    <div class="software">
+        <PageTitle icon="fa fa-desktop" main="Softwares"
             sub="Cadastros & Cia" />
             <b-card no-body>
                  <b-tabs card>

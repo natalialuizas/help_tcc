@@ -36,7 +36,7 @@
               v-model="client.cnpj"
               required
               v-mask="cnpj"
-              placeholder="Informe o CNPJ..."
+              placeholder="__.___.___/____-__"
             />
           </b-form-group>
         </b-col>
@@ -51,7 +51,7 @@
               v-model="client.ie"
               required
               v-mask="ie"
-              placeholder="Informe a Esc. Estadual..."
+              placeholder="___.___.___.___"
             />
           </b-form-group>
         </b-col>
@@ -64,7 +64,7 @@
               required
               :readonly="mode === 'remove'"
               v-mask="phone"
-              placeholder= "(99) 9999-9999"
+              placeholder= "(__) ____-____"
             />
           </b-form-group>
         </b-col>
@@ -76,7 +76,7 @@
               v-model="client.celular"
               required
               v-mask="cel"
-              placeholder= "(99) 99999-9999"
+              placeholder= "(__) _____-____"
             />
           </b-form-group>
         </b-col>
@@ -115,16 +115,23 @@
         </b-col>
         <b-col md="3" sm="12">
           <b-form-group label="CEP:" label-for="client-cep">
-            <b-form-input id="client-cep" type="text" v-model="client.cep" v-mask="cep" required placeholder= "99999-9999" />
+            <b-form-input id="client-cep" 
+            type="text" 
+            v-model="client.cep" 
+            v-mask="cep" 
+            required 
+            placeholder= "_____-___" />
           </b-form-group>
         </b-col>
+
         <b-col md="3" sm="12">
           <b-form-group label="Cidade:" label-for="client-cidade">
           <b-form-select
           id="client.cidade"
           :options="cidades"
           required
-          v-model="client.cidade" />
+          v-model="client.cidade" 
+          placeholder= "Selecione a Cidade"/>
           </b-form-group>
           </b-form-group>
         </b-col>
@@ -170,8 +177,14 @@
     </b-row>
     </div>
 
-    <b-table hover striped :items="clients" :fields="fields"  :filter="filter"
+    <b-table hover striped :items="clients" show-empty :fields="fields"  :filter="filter"
       :filterIncludedFields="filterOn"  @filtered="onFiltered">
+      <template v-slot:empty="scope">
+        <h4>{{ scope.emptyText }}</h4>
+      </template>
+      <template v-slot:emptyfiltered="scope">
+        <h4>{{ scope.emptyFilteredText }}</h4>
+      </template>
       <template slot="actions" slot-scope="data">
         <b-button variant="warning" @click="loadClient(data.item)" class="mr-2">
            <i class="fa fa-edit"></i>
