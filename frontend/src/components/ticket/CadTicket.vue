@@ -119,17 +119,38 @@
     </b-form>
 
     <!----- linha separando formulario e as tabelas ---->
-    <hr />
+
+       <!-- filtro de pesquisa -->
+     <div class="filtro">
+    <b-row align-h="end">
+       <b-col md="5" sm="12" >
+          <b-input-group>
+            <b-form-input
+              v-model="filter"
+              type="search"
+              id="filterInput"
+              placeholder="Digite sua pesquisa"
+            ></b-form-input>
+            <b-input-group-append>
+              <b-button :disabled="!filter" @click="filter = ''">Limpar</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
+    </b-row>
+    </div>
+
     <!----- tabelas ---->
-    <b-table hover striped :items="tickets" :fields="fields">
+    <b-table hover striped :items="tickets" :fields="fields" :filter="filter"
+      :filterIncludedFields="filterOn"  @filtered="onFiltered">
       <template slot="actions" slot-scope="data">
 
         <!-- botões de alterar da tabela -->
         <b-button variant="warning" @click="loadTicket(data.item)" class="mr-2">
-         <i class="fas fa-edit"></i>
+            <i class="fa fa-edit"></i>
         </b-button>
         <b-button variant="danger" @click="loadTicket(data.item, 'remove')">
-          <i class="fas fa-trash"></i> 
+          <i class="fa fa-trash"></i> 
         </b-button>
       </template>
     </b-table>
@@ -161,6 +182,8 @@ export default {
       options: [],
       users: [],
       problems: [],
+      filter: null,
+      filterOn: [],
       // paginação
       page: 1,
       perPage: 0,
@@ -173,10 +196,25 @@ export default {
         { key: "status", label: "Status", sortable: true },
         { key: "actions", label: "Ações" }
       ],
-      status: [ 0, 1],
+      status: [ 'RESOLVIDO', 'PENDENTE'],
     };
   },
+   computed: {
+      sortOptions() {
+       // Crie uma lista de opções a partir dos campos
+        return this.fields
+          .filter(f => f.sortable)
+          .map(f => {
+            return { text: f.label, value: f.key }
+          })
+      }
+    },
   methods: {
+    onFiltered(filteredItems) {
+       // Dispara a paginação para atualizar o número de botões / páginas devido à filtragem
+        this.totalRows = filteredItems.length
+        this.currentPage = 1
+      },
     loadTickets() {
       const url = `${baseApiUrl}/tickets?page=${this.page}`;
       axios.get(url).then(res => {
@@ -266,4 +304,7 @@ export default {
 </script>
 
 <style>
+    .filtro {
+        padding-top:  60px;
+    }
 </style>

@@ -65,21 +65,29 @@
         <!-- risca separando o formulario da table  -->
         <hr>
 
-     <!-- filtro de pesquisa -->
-    <div class="justify-content-centermy-1 row filtro">
-
-    <b-form-fieldset  class="col-6" :label-size="6">
-      <b-form-input v-model="Pesquisa" placeholder="Digite sua pesquisa..."></b-form-input>
-    </b-form-fieldset>
-
-    <b-form-fieldset horizontal label="Administrador" class="col-6" :label-size="6">
-      <b-form-select :options="[{text:Sim,value:1},{text:Não,value:0}]">
-      </b-form-select>
-    </b-form-fieldset>
-  </div>
+        <!-- filtro de pesquisa -->
+     <div class="filtro">
+    <b-row align-h="end">
+       <b-col md="5" sm="12" >
+          <b-input-group>
+            <b-form-input
+              v-model="filter"
+              type="search"
+              id="filterInput"
+              placeholder="Digite sua pesquisa"
+            ></b-form-input>
+            <b-input-group-append>
+              <b-button :disabled="!filter" @click="filter = ''">Limpar</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
+    </b-row>
+    </div>
 
     <!-- tabela  -->
-      <b-table hover striped responsive :items="users" :fields="fields">
+      <b-table hover striped responsive :items="users" :fields="fields" :filter="filter"
+      :filterIncludedFields="filterOn"  @filtered="onFiltered">
           <!-- botões de alterar e excluir -->
             <template slot="actions" slot-scope="data">
                 <!-- botão de alterar -->
@@ -106,6 +114,8 @@ export default {
     data: function() {
         return {
             mode: 'save',
+            filter: null,
+            filterOn: [],
             user: {},
             users: [],
             page: 1,
@@ -121,7 +131,23 @@ export default {
             ]
         }
     },
+    computed: {
+      sortOptions() {
+       // Crie uma lista de opções a partir dos campos
+        return this.fields
+          .filter(f => f.sortable)
+          .map(f => {
+            return { text: f.label, value: f.key }
+          })
+      }
+    },
     methods: {
+     onFiltered(filteredItems) {
+       // Dispara a paginação para atualizar o número de botões / páginas devido à filtragem
+        this.totalRows = filteredItems.length
+        this.currentPage = 1
+      },
+
      // carregar os usuários do backend
     loadUsers() {
       const url = `${baseApiUrl}/users?page=${this.page}`;
@@ -173,7 +199,9 @@ export default {
 
 <style>
     .filtro {
-        padding-top: 20px;
+        padding: 15px 0px;
+        margin: 0px;
+        text-align:right;
     }
 
 </style>

@@ -45,8 +45,29 @@
       <b-button variant="danger" v-if="mode === 'remove'" @click="remove">Excluir</b-button>
       <b-button class="ml-2" @click="reset">Cancelar</b-button>
     </b-form>
-    <hr />
-    <b-table hover striped :items="problems" :fields="fields">
+
+         <!-- filtro de pesquisa -->
+     <div class="filtro">
+    <b-row align-h="end">
+       <b-col md="5" sm="12" >
+          <b-input-group>
+            <b-form-input
+              v-model="filter"
+              type="search"
+              id="filterInput"
+              placeholder="Digite sua pesquisa"
+            ></b-form-input>
+            <b-input-group-append>
+              <b-button :disabled="!filter" @click="filter = ''">Limpar</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
+    </b-row>
+    </div>
+
+    <b-table hover striped :items="problems" :fields="fields" :filter="filter"
+      :filterIncludedFields="filterOn"  @filtered="onFiltered">
       <template slot="actions" slot-scope="data">
         <b-button variant="warning" @click="loadProblem(data.item)" class="mr-2">
         <i class="fa fa-edit"></i>
@@ -78,6 +99,8 @@ export default {
       problem: {},
       problems: [],
       softwares: [],
+      filter: null,
+      filterOn: [],
       types: ['NFE', 'SAT', 'SISTEMA'],
       page: 1,
       limit: 0,
@@ -91,7 +114,22 @@ export default {
       ]
     }
   },
+  computed: {
+      sortOptions() {
+       // Crie uma lista de opções a partir dos campos
+        return this.fields
+          .filter(f => f.sortable)
+          .map(f => {
+            return { text: f.label, value: f.key }
+          })
+      }
+    },
   methods: {
+      onFiltered(filteredItems) {
+       // Dispara a paginação para atualizar o número de botões / páginas devido à filtragem
+        this.totalRows = filteredItems.length
+        this.currentPage = 1
+      },
      // carregar base de conhecimento do backend
     loadProblems() {
       const url = `${baseApiUrl}/problems?page=${this.page}`
@@ -146,14 +184,6 @@ export default {
           return { value: software.id, text: software.nameSoftware }
         })
       })
-    },
-    loadTypes() {
-      const url = `${baseApiUrl}/types`
-      axios.get(url).then(res => {
-        this.types = res.data.map(type => {
-          return { value: type.id, text: `${type.name} ` }
-        });
-      });
     }
   },
   watch: {
@@ -170,4 +200,7 @@ export default {
 </script>
 
 <style>
+    .filtro {
+        padding-top:  60px;
+    }
 </style>

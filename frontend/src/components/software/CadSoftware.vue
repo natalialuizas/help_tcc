@@ -26,8 +26,30 @@
         </b-col>
       </b-row>
     </b-form>
-       <hr>
-      <b-table hover striped :items="softwares" :fields="fields">
+
+       <!-- filtro de pesquisa -->
+     <div class="filtro">
+    <b-row align-h="end">
+       <b-col md="5" sm="12" >
+          <b-input-group>
+            <b-form-input
+              v-model="filter"
+              type="search"
+              id="filterInput"
+              placeholder="Digite sua pesquisa"
+            ></b-form-input>
+            <b-input-group-append>
+              <b-button :disabled="!filter" @click="filter = ''">Limpar</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
+    </b-row>
+    </div>
+
+
+      <b-table hover striped :items="softwares" :fields="fields" :filter="filter"
+      :filterIncludedFields="filterOn"  @filtered="onFiltered">
             <template slot="actions" slot-scope="data">
                 <b-button variant="warning" @click="loadSoftware(data.item)" class="mr-2">
                     <i class="fa fa-edit"></i>
@@ -52,6 +74,8 @@ export default {
       mode: "save",
       software: {},
       softwares: [],
+      filter: null,
+      filterOn: [],
       page: 1,
       limit: 0,
       count: 0,
@@ -64,7 +88,22 @@ export default {
       ]
     };
   },
-  methods: {
+   computed: {
+      sortOptions() {
+       // Crie uma lista de opções a partir dos campos
+        return this.fields
+          .filter(f => f.sortable)
+          .map(f => {
+            return { text: f.label, value: f.key }
+          })
+      }
+    },
+    methods: {
+       onFiltered(filteredItems) {
+       // Dispara a paginação para atualizar o número de botões / páginas devido à filtragem
+        this.totalRows = filteredItems.length
+        this.currentPage = 1
+      },
      // carregar os Softwares do backend
      loadSoftwares() {
       const url = `${baseApiUrl}/softwares?page=${this.page}`;
@@ -122,5 +161,7 @@ export default {
 </script>
 
 <style>
-
+     .filtro {
+        padding-top: 20px;
+    }
 </style>

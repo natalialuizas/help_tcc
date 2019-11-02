@@ -132,7 +132,7 @@
           <b-form-group label="Estado:" label-for="client-estado">
             <b-form-select
           id="client.estado"
-          :options="estados"
+          :options="[{ value: 1, text: 'SÃO PAULO'  }]"
           required
           v-model="client.estado" />
           </b-form-group>
@@ -149,9 +149,29 @@
         </b-col>
       </b-row>
     </b-form>
-    <hr />
 
-    <b-table hover striped :items="clients" :fields="fields">
+      <!-- filtro de pesquisa -->
+     <div class="filtro">
+    <b-row align-h="end">
+       <b-col md="5" sm="12" >
+          <b-input-group>
+            <b-form-input
+              v-model="filter"
+              type="search"
+              id="filterInput"
+              placeholder="Digite sua pesquisa"
+            ></b-form-input>
+            <b-input-group-append>
+              <b-button :disabled="!filter" @click="filter = ''">Limpar</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
+    </b-row>
+    </div>
+
+    <b-table hover striped :items="clients" :fields="fields"  :filter="filter"
+      :filterIncludedFields="filterOn"  @filtered="onFiltered">
       <template slot="actions" slot-scope="data">
         <b-button variant="warning" @click="loadClient(data.item)" class="mr-2">
            <i class="fa fa-edit"></i>
@@ -180,6 +200,8 @@ export default {
       clients: [],
       page: 1,
       limit: 0,
+      filter: null,
+      filterOn: [],
       count: 0,
       fields: [
         // alterando os nomes da tabelas que vem do banco,
@@ -195,11 +217,25 @@ export default {
       ie: "###.###.###.###",
       cnpj: "##.###.###/####-##",
       cep: "#####-####",
-      estados: ['São Paulo'],
       cidades: ['Olímpia','Severinia', 'Monte Azul Paulista', 'Terra Rouxa', 'Cajobi', 'Embauba']
     };
   },
+   computed: {
+      sortOptions() {
+       // Crie uma lista de opções a partir dos campos
+        return this.fields
+          .filter(f => f.sortable)
+          .map(f => {
+            return { text: f.label, value: f.key }
+          })
+      }
+    },
   methods: {
+        onFiltered(filteredItems) {
+       // Dispara a paginação para atualizar o número de botões / páginas devido à filtragem
+        this.totalRows = filteredItems.length
+        this.currentPage = 1
+      },
     // carregar os usuários do backend
     loadClients() {
       const url = `${baseApiUrl}/clients?page=${this.page}`;
@@ -257,4 +293,7 @@ export default {
 </script>
 
 <style>
+  .filtro {
+        padding-top:  60px;
+    }
 </style>

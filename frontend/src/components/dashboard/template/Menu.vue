@@ -1,12 +1,29 @@
 <template>
     <aside class="menu" v-show="isMenuVisible">
-        <div class="menu-filter">
-            <i class="fa fa-search fa-lg"></i>
-            <input type="text" placeholder="Digite para filtrar..."
-                v-model="treeFilter" class="filter-field">
-        </div>
-        <Tree :data="treeData" :options="treeOptions"
-            :filter="treeFilter" ref="tree" />
+     	<nav id="sidebar">
+   		<ul class="list-unstyled components">
+   			<li>
+   			   <router-link to="/">
+                <i class="fa fa-tachometer"><span> Dashboard </span></i>
+               </router-link>
+               </li>
+               <li>
+   				     <router-link to="/clientes" >
+                    <i class="fa fa-user"> <span> Clientes </span> </i> 
+                    </router-link>
+               </li>
+               <li>
+   			   	<router-link to="/tickets" >
+               <i class="fa fa-phone"> <span> Atendimentos </span> </i> 
+              </router-link>
+   			</li>
+               <li>
+   		 		 <router-link to="/softwares" >
+                 <i class="fa fa-desktop"><span> Softwares </span></i>
+                  </router-link>
+   			</li>
+   		</ul>
+       </nav>
     </aside>
 </template>
 
@@ -18,91 +35,49 @@ import axios from 'axios'
 export default {
     name: 'Menu',
     components: { },
-    computed: mapState(['isMenuVisible']),
-    data: function() {
-        return {
-            treeFilter: '',
-            treeData: this.getTreeData(),
-            treeOptions: {
-                propertyNames: { 'text': 'name' },
-                filter: { emptyText: 'Categoria não encontrada' }
-            }
-        }
-    },
-    methods: {
-        getTreeData() {
-            const url = `${baseApiUrl}/categories/tree`
-            return axios.get(url).then(res => res.data)
-        },
-        onNodeSelect(node) {
-            this.$router.push({
-                name: 'articlesByCategory',
-                params: { id: node.id }
-            })
-
-            if(this.$mq === 'xs' || this.$mq === 'sm') {
-                this.$store.commit('toggleMenu', false)
-            }
-        }
-    },
-    mounted() {
-        this.$refs.tree.$on('node:selected', this.onNodeSelect)
-    }
+    computed: mapState(['isMenuVisible'])
 }
 </script>
 
 <style>
-    .menu {
+.menu {
         grid-area: menu;
          background-color: #222D32;
 
         display: flex;
         flex-direction: column;
         flex-wrap: wrap;
-    }
+}
 
-    .menu a,
-    .menu a:hover {
-        color: #fff;
-        text-decoration: none;
-    }
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background: #222D32;
+}
 
-    .menu .tree-node.selected > .tree-content,
-    .menu .tree-node .tree-content:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-    }
+#sidebar ul.components{
+	padding: 20px 0px;
+}
 
-    .tree-arrow.has-child {
-        filter: brightness(2);
-    }
+#sidebar ul li a{
+	padding: 12px 5px 12px 15px;
+    display: block;
+    color:#F1F2F2;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #313638;
+   
+}
 
-    .menu .menu-filter {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+#sidebar ul li a:hover {
+    color: rgb(223, 223, 223);
+    background: #1E282C;
+}
+ 
+span {
+    padding-left: 10px;
+    text-align: center;
+}
 
-        margin: 20px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #AAA;
-    }
 
-    .menu .menu-filter i {
-        color: #AAA;
-        margin-right: 10px;
-    }
 
-    .menu input {
-        color: #CCC;
-        font-size: 1.3rem;
-        border: 0;
-        outline: 0;
-        width: 100%;
-        background: transparent;
-    }
-
-    .tree-filter-empty {
-        color: #CCC;
-        font-size: 1.3rem;
-        margin-left: 20px;
-    }
 </style>

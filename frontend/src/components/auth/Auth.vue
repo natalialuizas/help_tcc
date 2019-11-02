@@ -3,21 +3,10 @@
         <div class="auth-modal">
             <img src="@/assets/logo.png" width="200" alt="Logo" />
             <hr>
-            <div class="auth-title">{{ showSignup ? 'Cadastro' : 'Login' }}</div>
-
-            <input v-if="showSignup" v-model="user.name" type="text" placeholder="Nome">
+            <div class="auth-title">Login</div>
             <input v-model="user.email" name="email" type="text" placeholder="E-mail">
             <input v-model="user.password" name="password" type="password" placeholder="Senha">
-            <input v-if="showSignup" v-model="user.confirmPassword"
-                type="password" placeholder="Confirme a Senha">
-
-            <button v-if="showSignup" @click="signup">Registrar</button>
-            <button v-else @click="signin">Entrar</button>
-
-            <a href @click.prevent="showSignup = !showSignup">
-                <span v-if="showSignup">Já tem cadastro? Acesse o Login!</span>
-                <span v-else>Não tem cadastro? Registre-se aqui!</span>
-            </a>
+            <button @click="signin">Entrar</button>
         </div>
     </div>
 </template>
@@ -41,15 +30,6 @@ export default {
                     this.$store.commit('setUser', res.data)
                     localStorage.setItem(userKey, JSON.stringify(res.data))
                     this.$router.push({ path: '/' })
-                })
-                .catch(showError)
-        },
-        signup() {
-            axios.post(`${baseApiUrl}/signup`, this.user)
-                .then(() => {
-                    this.$toasted.global.defaultSuccess()
-                    this.user = {}
-                    this.showSignup = false
                 })
                 .catch(showError)
         }
@@ -77,7 +57,7 @@ export default {
     }
 
     .auth-title {
-        font-size: 1.2rem;
+        font-size: 1.6rem;
         font-weight: 100;
         margin-top: 10px;
         margin-bottom: 15px;
@@ -87,15 +67,19 @@ export default {
         border: 1px solid #BBB;
         width: 100%;
         margin-bottom: 15px;
-        padding: 3px 8px;
+        padding: 4px 8px;
         outline: none;
+        border-radius: 2px;
     }
 
     .auth-modal button {
-        align-self: flex-end;
-        background-color: #2460ae;
+        align-self: center;
+        background-color: #3C8DBC;
+        border: 0px;
+        width: 100%;
         color: #FFF;
         padding: 5px 15px;
+        border-radius: 4px;
     }
 
     .auth-modal a {
