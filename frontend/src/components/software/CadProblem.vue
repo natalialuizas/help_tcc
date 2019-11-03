@@ -34,7 +34,7 @@
         </b-col>
         <b-col md="4" sm="12">
           <b-form-group v-if="mode === 'save'" label="Tipo:" label-for="problem-type_id">
-            <b-form-select id="problem-type_id" :options="types" v-model="problem.type_id" />
+            <b-form-select id="problem-type" :options="types" v-model="problem.type" />
           </b-form-group>
         </b-col>
       </b-row>
@@ -67,23 +67,36 @@
     </div>
 
     <b-table hover striped :items="problems" show-empty :fields="fields" :filter="filter"
-      :filterIncludedFields="filterOn"  @filtered="onFiltered"> <template v-slot:empty="scope">
+      striped responsive="sm" :filterIncludedFields="filterOn"  @filtered="onFiltered"> <template v-slot:empty="scope">
+        <!-- Texto que aparece quando não possui registro ou quando não encontrou registro -->
       <h4>{{ scope.emptyText }}</h4>
       </template>
       <template v-slot:emptyfiltered="scope">
         <h4>{{ scope.emptyFilteredText }}</h4>
       </template>
+      
+       <!-- chave estrageira convertendo texto -->
+        <template slot="name" slot-scope="data">{{ data.value.softwareId }}</template>
+
+         <!--  botões de visualizar, alterar e excluir que aparece com registros -->
       <template slot="actions" slot-scope="data">
-        <b-button variant="warning" @click="loadProblem(data.item)" class="mr-2">
+        <!-- botão de visualizar -->
+        <b-button variant="info" size="sm" @click="loadProblem(data.item)" class="mr-2">
+            <i class="fa fa-eye"></i>
+        </b-button>
+         <!-- botão de alterar -->
+        <b-button variant="warning" size="sm" @click="loadProblem(data.item)" class="mr-2">
         <i class="fa fa-edit"></i>
         </b-button>
-        <b-button variant="danger" @click="loadProblem(data.item, 'remove')">
+          <!-- botão de excluir -->
+        <b-button variant="danger" size="sm" @click="loadProblem(data.item, 'remove')">
          <i class="fa fa-trash"></i> 
         </b-button>
       </template>
     </b-table>
+    <hr/>
       <!-- paginação -->
-      <b-pagination size="md" v-model="page" :total-rows="count" :per-page="limit" />
+      <b-pagination align="center" size="md" v-model="page" :total-rows="count" :per-page="limit" />
   </div>
 </template>
 
@@ -113,7 +126,7 @@ export default {
       fields: [
         { key: "id", label: "Código", sortable: true },
         { key: "description", label: "Nome", sortable: true },
-        { key: "softwareId", label: "Software", sortable: true },
+        { key: "softwareId", label: "Software", formatter: "softwaresNames", sortable: true },
         { key: "type", label: "Tipo", sortable: true },
         { key: "actions", label: "Ações" }
       ]
@@ -130,6 +143,10 @@ export default {
       }
     },
   methods: {
+    softwaresNames(id) {
+      const software = this.softwares.find(software => software.id === id);
+      return software ? `${software.nameSoftware}` : software.nameSoftware;
+    },
       onFiltered(filteredItems) {
        // Dispara a paginação para atualizar o número de botões / páginas devido à filtragem
         this.totalRows = filteredItems.length
@@ -186,7 +203,7 @@ export default {
       const url = `${baseApiUrl}/softwaresList`
       axios.get(url).then(res => {
         this.softwares = res.data.map(software => {
-          return { value: software.id, text: software.nameSoftware }
+          return {...software, value: software.id, text: software.nameSoftware }
         })
       })
     }
@@ -199,7 +216,6 @@ export default {
   mounted() {
     this.loadSoftwares()
     this.loadProblems()
-    this.loadTypes()
   }
 };
 </script>

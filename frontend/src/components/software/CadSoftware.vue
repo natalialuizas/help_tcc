@@ -39,23 +39,32 @@
 
 
     <b-table hover striped :items="softwares" show-empty :fields="fields" :filter="filter"
-      :filterIncludedFields="filterOn" @filtered="onFiltered">
+      striped responsive="sm" :filterIncludedFields="filterOn" @filtered="onFiltered">
+      <!-- Texto que aparece quando não possui registro ou quando não encontrou registro -->
       <template v-slot:empty="scope">
         <h4>{{ scope.emptyText }}</h4>
       </template>
       <template v-slot:emptyfiltered="scope">
         <h4>{{ scope.emptyFilteredText }}</h4>
       </template>
+         <!--  botões de visualizar, alterar e excluir que aparece com registros -->
       <template slot="actions" slot-scope="data">
-        <b-button variant="warning" @click="loadSoftware(data.item)" class="mr-2">
+         <!-- botão de visualizar -->
+        <b-button variant="info" size="sm" @click="loadSoftware(data.item) " class="mr-2">
+            <i class="fa fa-eye"></i>
+        </b-button>
+         <!-- botão de alterar -->
+        <b-button variant="warning" size="sm" @click="loadSoftware(data.item)" class="mr-2">
           <i class="fa fa-edit"></i>
         </b-button>
-        <b-button variant="danger" @click="loadSoftware(data.item, 'remove')">
+        
+        <b-button variant="danger" size="sm" @click="loadSoftware(data.item, 'remove')">
           <i class="fa fa-trash"></i>
         </b-button>
       </template>
     </b-table>
-    <b-pagination size="md" v-model="page" :total-rows="count" :per-page="limit" />
+    <hr/>
+    <b-pagination align="center" size="md" v-model="page" :total-rows="count" :per-page="limit" />
   </div>
 </template>
 

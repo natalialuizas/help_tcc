@@ -6,8 +6,13 @@
       <!---- Input do Cliente ---->
       <b-row>
         <b-col md="6" sm="12">
-           <b-form-group label="Cliente:" label-for="ticket-cliente">
-            <v-select :options="options" v-model="ticket.clientId"/>
+           <b-form-group label="Cliente:" 
+           label-for="ticket-cliente" 
+           >
+
+            <v-select :options="options" 
+            v-model="ticket.clientId"
+            :readonly="mode === 'remove'"/>
           </b-form-group>
           </b-col>
 
@@ -132,25 +137,44 @@
 
     <!----- tabelas ---->
     <b-table hover striped :items="tickets" show-empty :fields="fields" :filter="filter"
-      :filterIncludedFields="filterOn"  @filtered="onFiltered">
+      striped responsive="sm" :filterIncludedFields="filterOn"  @filtered="onFiltered">
+
+       <!-- chave estrageira -->
+        <template slot="name" slot-scope="data">{{ data.value.userId }}</template>
+        <template slot="name" slot-scope="data">{{ data.value.problemId }}</template>
+            
+    <!-- Texto que aparece quando não possui registro ou quando não encontrou registro -->
       <template v-slot:empty="scope">
         <h4>{{ scope.emptyText }}</h4>
       </template>
       <template v-slot:emptyfiltered="scope">
         <h4>{{ scope.emptyFilteredText }}</h4>
       </template>
+      <!-- status  -->
+         <template slot="status" slot-scope="row">
+             <b-button variant="outline-success" size="sm" v-if="row.item.status === 'RESOLVIDO'">{{ row.item.status }}</b-button>
+             <b-button variant="outline-danger" size="sm" v-if="row.item.status === 'PENDENTE'">{{ row.item.status }}</b-button>
+        </template>
+
+          <!--  botões de visualizar, alterar e excluir que aparece com registros -->
       <template slot="actions" slot-scope="data">
-        <!-- botões de alterar da tabela -->
-        <b-button variant="warning" @click="loadTicket(data.item)" class="mr-2">
+          <!-- botão de visualizar -->
+         <b-button variant="info" size="sm" @click="loadTicket(data.item)" class="mr-2">
+            <i class="fa fa-eye"></i>
+        </b-button>
+         <!-- botão de alterar -->
+        <b-button variant="warning" size="sm" @click="loadTicket(data.item)" class="mr-2">
             <i class="fa fa-edit"></i>
         </b-button>
-        <b-button variant="danger" @click="loadTicket(data.item, 'remove')">
+          <!-- botão de excluir -->
+        <b-button variant="danger" size="sm" @click="loadTicket(data.item, 'remove')">
           <i class="fa fa-trash"></i> 
         </b-button>
       </template>
     </b-table>
+    <hr/>
       <!-- paginação -->
-    <b-pagination size="md" v-model="page" :total-rows="total" :per-page="perPage" />
+    <b-pagination align="center" size="md" v-model="page" :total-rows="total" :per-page="perPage"/>
   </div>
 </template>
 
@@ -187,7 +211,8 @@ export default {
       fields: [
         { key: "id", label: "Código", sortable: true },
         { key: "clientId", label: "Cliente", sortable: true },
-        { key: "problemId", label: "Problema", sortable: true },
+        { key: "problemId", label: "Problema", formatter: "problemNames", sortable: true },
+        { key: "userId", label: "Atendente", formatter: "assignNames", sortable: true },
         { key: "status", label: "Status", sortable: true },
         { key: "actions", label: "Ações" }
       ],
@@ -206,6 +231,14 @@ export default {
       }
     },
   methods: {
+    problemsNames(id) {
+      const problem = this.problems.find(problem => problem.id === id);
+      return problem ? `${problem.description}` : problem.description;
+    },
+    assignNames(id) {
+      const user = this.users.find(user => user.id === id);
+      return user ? `${user.name}` : user.name;
+    },
     onFiltered(filteredItems) {
        // Dispara a paginação para atualizar o número de botões / páginas devido à filtragem
         this.totalRows = filteredItems.length
@@ -217,6 +250,7 @@ export default {
         this.tickets = res.data.data;
         this.total = res.data.total;
         this.perPage = res.data.perPage
+
       });
     },
     reset() {
@@ -251,10 +285,10 @@ export default {
         .then(res => (this.ticket = res.data))
     },
     loadSoftwares() {
-      const url = `${baseApiUrl}/softwaresList`
+      const url = `${baseApiUrl}/softwares`
       axios.get(url).then(res => {
         this.softwares = res.data.map(software => {
-          return { value: software.id, text: `${software.nameSoftware} ` }
+          return {...software, value: software.id, text: software.nameSoftware }
         })
       })
     },
@@ -262,7 +296,7 @@ export default {
       const url = `${baseApiUrl}/clientsList`;
       axios.get(url).then(res => {
         this.clients = res.data.map(client => {
-          return this.options.push(client.nomeFantasia)
+          return this.options.push(client.id)
         })
       })
     },
@@ -270,7 +304,7 @@ export default {
       const url = `${baseApiUrl}/problemsList`;
       axios.get(url).then(res => {
         this.problems = res.data.map(problem => {
-          return { value: problem.id, text: `${problem.description} ` }
+          return {...problem, value: problem.id, text: problem.description }
         })
       })
     },
@@ -278,7 +312,7 @@ export default {
       const url = `${baseApiUrl}/usersList`;
       axios.get(url).then(res => {
         this.users = res.data.map(user => {
-          return { value: user.id, text: `${user.name} ` };
+          return {...user, value: user.id, text: user.name };
         })
       })
     }
@@ -303,4 +337,5 @@ export default {
     .filtro {
         padding-top:  60px;
     }
+  
 </style>

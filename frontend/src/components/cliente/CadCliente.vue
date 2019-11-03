@@ -22,6 +22,7 @@
               type="text"
               v-model="client.nomeFantasia"
               required
+                :readonly="mode === 'remove'"
               placeholder="Informe o Nome Fantasia..."
             />
           </b-form-group>
@@ -40,9 +41,7 @@
             />
           </b-form-group>
         </b-col>
-         <b-form-invalid-feedback id="input-cnpj-feedback">
-         Digite os 11 numeros
-        </b-form-invalid-feedback>
+
         <b-col md="3" sm="12">
           <b-form-group label="IE:" label-for="client-ie">
             <b-form-input
@@ -151,7 +150,7 @@
           <b-button variant="primary" v-if="mode === 'save'" @click="save">Salvar</b-button>
 
           <b-button variant="danger" v-if="mode === 'remove'" @click="remove">Excluir</b-button>
-
+          
           <b-button class="ml-2" @click="reset">Cancelar</b-button>
         </b-col>
       </b-row>
@@ -177,25 +176,34 @@
     </b-row>
     </div>
 
-    <b-table hover striped :items="clients" show-empty :fields="fields"  :filter="filter"
-      :filterIncludedFields="filterOn"  @filtered="onFiltered">
+    <b-table hover striped :items="clients" show-empty :fields="fields"  :filter="filter" 
+      striped responsive="sm" :filterIncludedFields="filterOn"  @filtered="onFiltered" >
+      <!-- Texto que aparece quando não possui registro ou quando não encontrou registro -->
       <template v-slot:empty="scope">
         <h4>{{ scope.emptyText }}</h4>
       </template>
       <template v-slot:emptyfiltered="scope">
         <h4>{{ scope.emptyFilteredText }}</h4>
       </template>
+      <!--  botões de visualizar, alterar e excluir que aparece com registros -->
       <template slot="actions" slot-scope="data">
-        <b-button variant="warning" @click="loadClient(data.item)" class="mr-2">
+        <!-- botão de visualizar -->
+        <b-button variant="info" size="sm" @click="loadClient(data.item)" class="mr-2">
+            <i class="fa fa-eye"></i>
+        </b-button>
+         <!-- botão de alterar -->
+        <b-button variant="warning" size="sm" @click="loadClient(data.item)" class="mr-2">
            <i class="fa fa-edit"></i>
         </b-button>
-        <b-button variant="danger" @click="loadClient(data.item, 'remove')">
+          <!-- botão de excluir -->
+        <b-button variant="danger" size="sm" @click="loadClient(data.item, 'remove')">
            <i class="fa fa-trash"></i>
         </b-button>
       </template>
     </b-table>
+    <hr/>
    <!-- paginação -->
-      <b-pagination size="md" v-model="page" :total-rows="count" :per-page="limit" />
+      <b-pagination align="center" size="md" v-model="page" :total-rows="count" :per-page="limit" />
   </div>
 </template>
 
@@ -230,7 +238,8 @@ export default {
       ie: "###.###.###.###",
       cnpj: "##.###.###/####-##",
       cep: "#####-####",
-      cidades: ['Olímpia','Severinia', 'Monte Azul Paulista', 'Terra Rouxa', 'Cajobi', 'Embauba']
+      cidades: ['Olímpia','Severinia', 'Monte Azul Paulista', 'Terra Rouxa', 'Cajobi', 'Embauba'],
+     
     };
   },
    computed: {

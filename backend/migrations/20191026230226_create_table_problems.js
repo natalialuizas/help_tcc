@@ -8,6 +8,7 @@ exports.up = function(knex, Promise) {
        .references("id")
        .inTable("softwares")
      table.string("solution")
+     table.string("type")
      table.timestamps();
    });
 };

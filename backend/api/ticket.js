@@ -8,7 +8,6 @@ module.exports = app => {
         const ticket = {
           id: req.body.id,
           clientId: req.body.clientId,
-          softwareId: req.body.softwareId,
           problemId: req.body.problemId,
           userId: req.body.userId,
           status: req.body.status,
@@ -22,7 +21,6 @@ module.exports = app => {
         try {
               // verificando se os campos estão preenchidos, exibir mensagem de erro
             existsOrError(ticket.clientId, "Cliente não informado");
-            existsOrError(ticket.softwareId, "Software não informado");
             existsOrError(ticket.problemId, "Problema não informado");
             existsOrError(ticket.userId, "Usuário não informado");
             existsOrError(ticket.status, "Status não informado");
@@ -69,7 +67,6 @@ module.exports = app => {
        .select(
          "id",
          "clientId",
-         "softwareId",
          "problemId",
          "userId",
          "status",
@@ -90,7 +87,7 @@ module.exports = app => {
    const getById = (req, res) => {
      app
        .db("tickets")
-       .select("id", "clientId", "softwareId", "problemId","userId",  "status", "description", "solicitante", "date")
+       .select("id", "clientId", "problemId","userId",  "status", "description", "solicitante", "date")
        .where({ id: req.params.id })
        .first()
        .then(ticket => res.json(ticket))

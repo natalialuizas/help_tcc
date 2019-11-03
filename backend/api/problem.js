@@ -9,7 +9,8 @@ module.exports = app => {
       id: req.body.id,
       description: req.body.description,
       softwareId: req.body.softwareId,
-      solution: req.body.solution
+      solution: req.body.solution,
+      type: req.body.type
     };
     // verificando se o id está setado
     if (req.params.id) problem.id = req.params.id;
@@ -54,7 +55,7 @@ module.exports = app => {
 
      app
        .db("problems")
-       .select("id", "description", "softwareId", "solution")
+       .select("id", "description", "softwareId", "solution", "type")
        .limit(limit)
        .offset(page * limit - limit)
        .then(problems => res.json({ data: problems, count, limit }))
@@ -73,7 +74,7 @@ module.exports = app => {
   const getById = (req, res) => {
     app
       .db("problems")
-      .select("id", "description", "softwareId", "solution")
+      .select("id", "description", "softwareId", "solution", "type")
       .where({ id: req.params.id })
       .first()
       .then(problem => res.json(problem))

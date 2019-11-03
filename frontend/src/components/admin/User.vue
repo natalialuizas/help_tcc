@@ -84,27 +84,33 @@
 
     <!-- tabela  -->
       <b-table hover striped responsive :items="users" show-empty :fields="fields" :filter="filter"
-      :filterIncludedFields="filterOn"  @filtered="onFiltered">
+      striped responsive="sm" :filterIncludedFields="filterOn"  @filtered="onFiltered">
+      <!-- Texto que aparece quando não possui registro ou quando não encontrou registro -->
       <template v-slot:empty="scope">
         <h4>{{ scope.emptyText }}</h4>
       </template>
       <template v-slot:emptyfiltered="scope">
         <h4>{{ scope.emptyFilteredText }}</h4>
       </template>
-          <!-- botões de alterar e excluir -->
+            <!--  botões de visualizar, alterar e excluir que aparece com registros -->
             <template slot="actions" slot-scope="data">
+              <!-- botão de visualizar -->
+              <b-button variant="info" size="sm" @click="loadUser(data.item)" class="mr-2">
+              <i class="fa fa-eye"></i>
+               </b-button>
                 <!-- botão de alterar -->
-                <b-button variant="warning" @click="loadUser(data.item)" class="mr-1">
+                <b-button variant="warning" size="sm" @click="loadUser(data.item)" class="mr-1">
                     <i class="fa fa-edit"></i>
                 </b-button>
                 <!-- botão de excluir -->
-                <b-button variant="danger" @click="loadUser(data.item, 'remove')">
+                <b-button variant="danger" size="sm" @click="loadUser(data.item, 'remove')">
                     <i class="fa fa-trash"></i>
                 </b-button>
             </template>
         </b-table>
+        <hr />
         <!-- paginação -->
-     <b-pagination size="md" v-model="page" :total-rows="count" :per-page="limit" />
+     <b-pagination align="center" size="md" v-model="page" :total-rows="count" :per-page="limit" />
     </div>
 </template>
 
