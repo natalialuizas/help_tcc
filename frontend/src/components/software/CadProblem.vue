@@ -145,7 +145,7 @@ export default {
   methods: {
     softwaresNames(id) {
       const software = this.softwares.find(software => software.id === id);
-      return software ? `${software.nameSoftware}` : software.nameSoftware;
+      return software ? `${software.nameSoftware}` : software.id;
     },
       onFiltered(filteredItems) {
        // Dispara a paginação para atualizar o número de botões / páginas devido à filtragem
