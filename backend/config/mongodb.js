@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost/knowledge_stats', { useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect('mongodb://localhost/helpdesk_stats', { useNewUrlParser: true, useUnifiedTopology: true})
     .catch(e => {
         const msg = 'ERRO! Não foi possível conectar com o MongoDB!'
          // cor que quero exibir no terminal

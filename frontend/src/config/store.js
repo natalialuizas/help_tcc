@@ -13,6 +13,7 @@ export default new Vuex.Store({
         toggleMenu(state, isVisible) {
             if(!state.user) {
                 state.isMenuVisible = false
+
                 return
             }
 

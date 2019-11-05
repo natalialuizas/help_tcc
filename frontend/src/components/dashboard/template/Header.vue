@@ -30,6 +30,12 @@ export default {
 </script>
 
 <style>
+    #app.hide-menu {
+		grid-template-areas:
+			"header header"
+			"content content"
+			"footer footer";
+	}
     .header {
         grid-area: header;
         background-color: #3C8DBC;

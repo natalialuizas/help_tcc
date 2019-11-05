@@ -98,7 +98,7 @@
 
     <!----- tabelas ---->
     <b-table hover striped :items="tickets" show-empty :fields="fields" :filter="filter" striped responsive="sm"
-      :filterIncludedFields="filterOn" @filtered="onFiltered" :small="small">
+      :filterIncludedFields="filterOn" @filtered="onFiltered">
 
       <!-- chave estrageira -->
       <template slot="name" slot-scope="data">{{ data.value.userId }}</template>

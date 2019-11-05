@@ -67,8 +67,11 @@
     </div>
 
     <b-table hover striped :items="problems" show-empty :fields="fields" :filter="filter"
-      striped responsive="sm" :filterIncludedFields="filterOn"  @filtered="onFiltered"> <template v-slot:empty="scope">
-        <!-- Texto que aparece quando não possui registro ou quando não encontrou registro -->
+      striped responsive="sm" :filterIncludedFields="filterOn"  @filtered="onFiltered"> 
+
+      <!-- Texto que aparece quando não possui registro ou quando não encontrou registro -->
+      
+      <template v-slot:empty="scope">
       <h4>{{ scope.emptyText }}</h4>
       </template>
       <template v-slot:emptyfiltered="scope">
