@@ -1,5 +1,7 @@
 module.exports = app => {
+    
     function existsOrError(value, msg) {
+        // verificando se o valor está setado, se for verdadeiro mostra a mensagem
         if(!value) throw msg
         if(Array.isArray(value) && value.length === 0) throw msg
         if(typeof value === 'string' && !value.trim()) throw msg

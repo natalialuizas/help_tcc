@@ -12,6 +12,7 @@ module.exports = app => {
           userId: req.body.userId,
           status: req.body.status,
           description: req.body.description,
+          softwareId: req.body.softwareId,
           date: req.body.date,
           solicitante: req.body.solicitante
         };
@@ -24,6 +25,7 @@ module.exports = app => {
             existsOrError(ticket.problemId, "Problema não informado");
             existsOrError(ticket.userId, "Usuário não informado");
             existsOrError(ticket.status, "Status não informado");
+            existsOrError(ticket.softwareId, "Software não informado");
             existsOrError(ticket.description, "Descrição da solução não informado");
             existsOrError(ticket.date, "Data não informada");
             existsOrError(ticket.solicitante, "Descrição da solução não informado");
@@ -70,6 +72,7 @@ module.exports = app => {
          "problemId",
          "userId",
          "status",
+         "softwareId",
          "description",
          "solicitante",
          "date"
@@ -87,7 +90,17 @@ module.exports = app => {
    const getById = (req, res) => {
      app
        .db("tickets")
-       .select("id", "clientId", "problemId","userId",  "status", "description", "solicitante", "date")
+       .select(
+         "id",
+         "clientId",
+         "problemId",
+         "userId",
+         "status",
+         "description",
+         "solicitante",
+         "date",
+         "softwareId"
+       )
        .where({ id: req.params.id })
        .first()
        .then(ticket => res.json(ticket))

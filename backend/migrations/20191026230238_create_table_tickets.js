@@ -17,6 +17,11 @@ exports.up = function(knex, Promise) {
         .references("id")
         .inTable("users")
         .notNull();
+       table
+         .integer("softwareId")
+         .references("id")
+         .inTable("softwares")
+         .notNull();
       table.string("status")
       table.string("solicitante") 
       table.string("description", 1000) 
