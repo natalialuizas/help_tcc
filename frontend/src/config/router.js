@@ -16,7 +16,8 @@ const routes = [
   {
     name: "home",
     path: "/",
-    component: Home
+    component: Home,
+
   },
   {
     name: "adminPages",
@@ -45,7 +46,7 @@ const routes = [
     component: Auth
   },
   { path: "*", redirect: "/" }
-]
+];
 
 const router = new VueRouter({
     mode: 'history',

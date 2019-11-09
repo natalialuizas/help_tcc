@@ -28,7 +28,7 @@
       </b-row>
       <b-row>
         <b-col md="8" sm="12">
-          <b-form-group  v-if="mode === 'save' "label="Arquivo:" label-for="problem-file_id">
+          <b-form-group  v-if="mode === 'save' "label="Imagem:" label-for="problem-file_id">
             <b-form-file id="problem-file_id" accept=".jpg, .png, .gif"></b-form-file>
           </b-form-group>
         </b-col>

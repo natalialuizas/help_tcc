@@ -41,10 +41,19 @@
 
       <!----- Input do Problema ---->
       <b-row>
-        <b-col md="6" sm="12">
+        <b-col md="4" sm="12">
           <b-form-group v-if="mode === 'save'" label="Problema:" label-for="ticket-problemId">
 
             <b-form-select id="ticket-problemId" :options="problems" v-model="ticket.problemId">
+            </b-form-select>
+          </b-form-group>
+        </b-col>
+
+        <!----- Input do Software ---->
+        <b-col md="2" sm="12">
+          <b-form-group v-if="mode === 'save'" label="Software:" label-for="ticket-softwareId">
+
+            <b-form-select id="ticket-softwareId" :options="softwares" v-model="ticket.softwareId">
             </b-form-select>
           </b-form-group>
         </b-col>
@@ -97,13 +106,21 @@
     </div>
 
     <!----- tabelas ---->
-    <b-table hover striped :items="tickets" show-empty :fields="fields" :filter="filter" striped responsive="sm"
-      :filterIncludedFields="filterOn" @filtered="onFiltered">
+    <b-table 
+    responsive
+    hover 
+    striped 
+    :items="tickets" 
+    show-empty :fields="fields" 
+    :filter="filter"
+    :filterIncludedFields="filterOn" 
+    @filtered="onFiltered">
 
       <!-- chave estrageira -->
       <template slot="name" slot-scope="data">{{ data.value.userId }}</template>
       <template slot="name" slot-scope="data">{{ data.value.problemId }}</template>
       <template slot="name" slot-scope="data">{{ data.value.clientId }}</template>
+      <template slot="name" slot-scope="data">{{ data.value.softwareId }}</template>
 
 
       <!-- Texto que aparece quando não possui registro ou quando não encontrou registro -->
@@ -139,7 +156,7 @@
     </b-table>
     <hr />
     <!-- paginação -->
-    <b-pagination align="center" size="md" v-model="page" :total-rows="total" :per-page="perPage" />
+      <b-pagination align="center" size="md" v-model="page" :total-rows="count" :per-page="limit" />
   </div>
 </template>
 
@@ -160,24 +177,25 @@
       return {
         mode: "save",
         clientId: '',
+        client: '',
         ticket: {},
         tickets: [],
         softwares: [],
         clients: [],
-        client: '',
         users: [],
         problems: [],
         filter: null,
         filterOn: [],
         // paginação
-        page: 1,
-        perPage: 0,
-        total: 0,
+         page: 1,
+        limit: 0,
+        count: 0,
         // cabeçalho da tabela
         fields: [
           { key: "id", label: "Cod" },
           { key: "clientId", label: "Cliente", formatter: "clientNames", sortable: true },
           { key: "problemId", label: "Problema", formatter: "problemsNames", sortable: true },
+          { key: "softwareId", label: "Software", formatter: "softwareNames", sortable: true },
           { key: "userId", label: "Atendente", formatter: "assignNames", sortable: true },
           { key: "date", label: "Data", sortable: true },
           { key: "status", label: "Status", sortable: true },
@@ -198,6 +216,10 @@
       },
     },
     methods: {
+      softwareNames(id) {
+        const software = this.softwares.find(software => software.id === id);
+        return software ? `${software.nameSoftware}` : software.id;
+      },
       problemsNames(id) {
         const problem = this.problems.find(problem => problem.id === id);
         return problem ? `${problem.description}` : problem.id;
@@ -219,8 +241,8 @@
         const url = `${baseApiUrl}/tickets?page=${this.page}`;
         axios.get(url).then(res => {
           this.tickets = res.data.data;
-          this.total = res.data.total;
-          this.perPage = res.data.perPage
+          this.count = res.data.count;
+          this.limit = res.data.limit;
 
         });
       },
@@ -276,7 +298,15 @@
             return { ...user, value: user.id, text: user.name };
           })
         })
-      }
+      },
+      loadSoftwares() {
+      const url = `${baseApiUrl}/softwaresList`
+      axios.get(url).then(res => {
+        this.softwares = res.data.map(software => {
+          return {...software, value: software.id, text: software.nameSoftware }
+        })
+      })
+    },
     },
 
     watch: {
@@ -288,6 +318,7 @@
       this.loadTickets()
       this.loadClients()
       this.loadProblems()
+      this.loadSoftwares()
       this.loadUsers()
     }
   };

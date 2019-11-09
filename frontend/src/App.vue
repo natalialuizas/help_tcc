@@ -1,6 +1,8 @@
 <template>
 	<div id="app" :class="{'hide-menu': !isMenuVisible || !user}">
-		<Header v-if="user" />
+		<Header :hideToggle="!user"
+			:hideUserDropdown="!user" 
+			 class="header" />
 		<Menu v-if="user" />
 		<Loading v-if="validatingToken" />
 		<Content v-else />
@@ -65,6 +67,7 @@ export default {
 </script>
 
 <style>
+	
 	* {
 		font-family: 'Source Sans Pro',sans-serif;
 	}
