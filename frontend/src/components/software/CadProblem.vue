@@ -84,17 +84,42 @@
          <!--  botões de visualizar, alterar e excluir que aparece com registros -->
       <template slot="actions" slot-scope="data">
         <!-- botão de visualizar -->
-        <b-button variant="info" size="sm" @click="loadProblem(data.item)" class="mr-2">
-            <i class="fa fa-eye"></i>
+         <b-button size="sm" variant="info" @click="data.toggleDetails" class="mr-1">
+           <i class="fa fa-eye"></i>
         </b-button>
          <!-- botão de alterar -->
-        <b-button variant="warning" size="sm" @click="loadProblem(data.item)" class="mr-2">
+        <b-button variant="warning" size="sm" @click="loadProblem(data.item)" class="mr-1">
         <i class="fa fa-edit"></i>
         </b-button>
           <!-- botão de excluir -->
-        <b-button variant="danger" size="sm" @click="loadProblem(data.item, 'remove')">
+        <b-button variant="danger" size="sm" @click="loadProblem(data.item, 'remove')" class="mr-1">
          <i class="fa fa-trash"></i> 
         </b-button>
+      </template>
+       <template v-slot:row-details="row">
+        <b-card>
+            <b-row class="mb-2">
+                <b-col sm="3" class="text-sm-right"><b>ID:</b></b-col>
+                <b-col>{{ row.item.id }}</b-col>
+              </b-row>
+    
+              <b-row class="mb-2">
+                <b-col sm="3" class="text-sm-right"><b>Descrição:</b></b-col>
+                <b-col>{{ row.item.description }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>Software:</b></b-col>
+                  <b-col>{{ row.item.softwareId }}</b-col>
+                </b-row>
+                <b-row class="mb-2">
+                    <b-col sm="3" class="text-sm-right"><b>Tipo:</b></b-col>
+                    <b-col>{{ row.item.type }}</b-col>
+                  </b-row>
+                <b-row class="mb-2">
+                      <b-col sm="3" class="text-sm-right"><b>Imagem url:</b></b-col>
+                      <b-col>{{  }}</b-col>
+                </b-row>
+        </b-card>
       </template>
     </b-table>
     <hr/>

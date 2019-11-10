@@ -188,17 +188,65 @@
       <!--  botões de visualizar, alterar e excluir que aparece com registros -->
       <template slot="actions" slot-scope="data">
         <!-- botão de visualizar -->
-        <b-button variant="info" size="sm" @click="loadClient(data.item)" class="mr-2">
-            <i class="fa fa-eye"></i>
+        <b-button size="sm" variant="info" @click="data.toggleDetails" class="mr-1">
+           <i class="fa fa-eye"></i>
         </b-button>
          <!-- botão de alterar -->
-        <b-button variant="warning" size="sm" @click="loadClient(data.item)" class="mr-2">
+        <b-button variant="warning" size="sm" @click="loadClient(data.item)"  class="mr-1">
            <i class="fa fa-edit"></i>
         </b-button>
           <!-- botão de excluir -->
-        <b-button variant="danger" size="sm" @click="loadClient(data.item, 'remove')">
+        <b-button variant="danger" size="sm" @click="loadClient(data.item, 'remove')" class="mr-1">
            <i class="fa fa-trash"></i>
         </b-button>
+      </template>
+       <template v-slot:row-details="row">
+        <b-card>
+            <b-row class="mb-2">
+                <b-col sm="3" class="text-sm-right"><b>ID:</b></b-col>
+                <b-col>{{ row.item.id }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                <b-col sm="3" class="text-sm-right"><b>Razão Social:</b></b-col>
+                <b-col>{{ row.item.razaoSocial}}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>Nome Fantasia:</b></b-col>
+                  <b-col>{{ row.item.nomeFantasia }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>CNPJ:</b></b-col>
+                  <b-col>{{ row.item.cnpj }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>IE:</b></b-col>
+                  <b-col>{{ row.item.ie }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>Endereço:</b></b-col>
+                  <b-col>{{ row.item.endereco  }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>Bairro:</b></b-col>
+                  <b-col>{{ row.item.bairro  }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>Cidade:</b></b-col>
+                  <b-col>{{ row.item.cidade  }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                    <b-col sm="3" class="text-sm-right"><b>Telefone Fixo:</b></b-col>
+                    <b-col>{{ row.item.telefone }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                    <b-col sm="3" class="text-sm-right"><b>Celular:</b></b-col>
+                    <b-col>{{ row.item.celular }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>Email:</b></b-col>
+                  <b-col>{{ row.item.email }}</b-col>
+              </b-row>
+        </b-card>
       </template>
     </b-table>
     <hr/>
@@ -318,4 +366,5 @@ export default {
   .filtro {
         padding-top:  60px;
     }
+
 </style>

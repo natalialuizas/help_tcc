@@ -84,7 +84,7 @@
 
     <!-- tabela  -->
       <b-table hover striped responsive :items="users" show-empty :fields="fields" :filter="filter"
-      striped responsive="sm" :filterIncludedFields="filterOn"  @filtered="onFiltered">
+       responsive :filterIncludedFields="filterOn"  @filtered="onFiltered">
       <!-- Texto que aparece quando não possui registro ou quando não encontrou registro -->
       <template v-slot:empty="scope">
         <h4>{{ scope.emptyText }}</h4>
@@ -95,18 +95,38 @@
             <!--  botões de visualizar, alterar e excluir que aparece com registros -->
             <template slot="actions" slot-scope="data">
               <!-- botão de visualizar -->
-              <b-button variant="info" size="sm" @click="loadUser(data.item)" class="mr-2">
-              <i class="fa fa-eye"></i>
-               </b-button>
+             <b-button size="sm" variant="info" @click="data.toggleDetails" class="mr-1">
+               <i class="fa fa-eye"></i>
+              </b-button>
                 <!-- botão de alterar -->
                 <b-button variant="warning" size="sm" @click="loadUser(data.item)" class="mr-1">
                     <i class="fa fa-edit"></i>
                 </b-button>
                 <!-- botão de excluir -->
-                <b-button variant="danger" size="sm" @click="loadUser(data.item, 'remove')">
+                <b-button variant="danger" size="sm" @click="loadUser(data.item, 'remove')" class="mr-1">
                     <i class="fa fa-trash"></i>
                 </b-button>
             </template>
+            <template v-slot:row-details="row">
+           <b-card>
+              <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>ID:</b></b-col>
+                  <b-col>{{ row.item.id }}</b-col>
+                </b-row>
+                <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>Nome:</b></b-col>
+                  <b-col>{{ row.item.name }}</b-col>
+                </b-row>
+                <b-row class="mb-2">
+                    <b-col sm="3" class="text-sm-right"><b>Email:</b></b-col>
+                    <b-col>{{ row.item.email }}</b-col>
+                  </b-row>
+                <b-row class="mb-2">
+                    <b-col sm="3" class="text-sm-right"><b>Admin:</b></b-col>
+                    <b-col>{{ row.item.admin }}</b-col>
+                  </b-row>
+        </b-card>
+      </template>
         </b-table>
         <hr />
         <!-- paginação -->

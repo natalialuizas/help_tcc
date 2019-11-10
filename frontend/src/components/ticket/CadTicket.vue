@@ -94,7 +94,8 @@
       <b-row align-h="end">
         <b-col md="5" sm="12">
           <b-input-group>
-            <b-form-input v-model="filter" type="search" id="filterInput" placeholder="Digite sua pesquisa">
+            <b-form-input v-model="filter" type="search" id="filterInput" 
+            placeholder="Digite sua pesquisa">
             </b-form-input>
             <b-input-group-append>
               <b-button :disabled="!filter" @click="filter = ''">Limpar</b-button>
@@ -132,26 +133,60 @@
       </template>
       <!-- status  -->
       <template slot="status" slot-scope="row">
-        <b-button variant="outline-success" size="sm" v-if="row.item.status === 'RESOLVIDO'">{{ row.item.status }}
+        <b-button variant="outline-success" size="sm" v-if="row.item.status === 'RESOLVIDO'">
+          {{ row.item.status }}
         </b-button>
-        <b-button variant="outline-danger" size="sm" v-if="row.item.status === 'PENDENTE'">{{ row.item.status }}
+        <b-button variant="outline-danger" size="sm" v-if="row.item.status === 'PENDENTE'">
+          {{ row.item.status }}
         </b-button>
       </template>
 
       <!--  botões de visualizar, alterar e excluir que aparece com registros -->
       <template slot="actions" slot-scope="data">
         <!-- botão de visualizar -->
-        <b-button variant="info" size="sm" @click="loadTicket(data.item)" class="mr-2">
-          <i class="fa fa-eye"></i>
+        <b-button size="sm" variant="info" @click="data.toggleDetails" class="mr-1">
+           <i class="fa fa-eye"></i>
         </b-button>
         <!-- botão de alterar -->
-        <b-button variant="warning" size="sm" @click="loadTicket(data.item)" class="mr-2">
+        <b-button variant="warning" size="sm" @click="loadTicket(data.item)"  class="mr-1">
           <i class="fa fa-edit"></i>
         </b-button>
         <!-- botão de excluir -->
-        <b-button variant="danger" size="sm" @click="loadTicket(data.item, 'remove')">
+        <b-button variant="danger" size="sm" @click="loadTicket(data.item, 'remove')"  class="mr-1">
           <i class="fa fa-trash"></i>
         </b-button>
+      </template>
+       <template v-slot:row-details="row">
+        <b-card>
+            <b-row class="mb-2">
+                <b-col sm="3" class="text-sm-right"><b>ID:</b></b-col>
+                <b-col>{{ row.item.id }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                <b-col sm="3" class="text-sm-right"><b>Cliente:</b></b-col>
+                <b-col>{{ row.item.clientId}}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>Data:</b></b-col>
+                  <b-col>{{ row.item.date }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>Problema:</b></b-col>
+                  <b-col>{{ row.item.problemId }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>Software:</b></b-col>
+                  <b-col>{{ row.item.softwareId }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>Solicitante:</b></b-col>
+                  <b-col>{{ row.item.solicitante  }}</b-col>
+              </b-row>
+              <b-row class="mb-2">
+                  <b-col sm="3" class="text-sm-right"><b>Atendente:</b></b-col>
+                  <b-col>{{ row.item.userId  }}</b-col>
+              </b-row>
+        </b-card>
       </template>
     </b-table>
     <hr />
